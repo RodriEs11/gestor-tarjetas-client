@@ -1,0 +1,48 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  height: 200px;
+  background-color: rgb(207, 207, 207);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+
+
+}
+.footer hr {
+  height: 2px;
+  width: 100%;
+  opacity: 50%;
+}
+.footer-container h1 {
+    text-align: center;
+  font-size: 30px;
+  margin: 15px;
+}
+
+.footer-container {
+  width: 100%;
+  display: block;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.iconos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.icono {
+    margin: 5px;
+    transition: 200ms;
+}
+
+.icono:hover{
+    cursor: pointer;
+    
+    size: 30px;
+}

@@ -1,0 +1,54 @@
+.form-container {
+  background-color: #fff;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  text-align: left;
+}
+
+.titulo {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form select,
+.form input[type="text"],
+.form input[type="number"],
+.form input[type="date"],
+.form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.boton-borrar {
+  background-color: #527396;
+}
+.boton-agregar {
+  background-color: #007bff;
+}
+
+.boton-borrar:hover {
+    background-color: #a1c0e0;
+  }
+  .boton-agregar:hover{
+    background-color: #47a0ff;
+  }
+  
+
+.form button {
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-right: 10px;
+}
