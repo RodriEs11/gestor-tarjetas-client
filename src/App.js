@@ -1,83 +1,43 @@
-import './App.css';
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import FormAgregarCuota from './components/FormAgregarCuota/FormAgregarCuota';
-import Header from './components/Header/Header';
-import Consumo from './components/Consumo/Consumo';
-import Tarjeta from './components/Tarjeta/Tarjeta';
-import Footer from './components/Footer/Footer';
+import Inicio from "./pages/Inicio";
+import IndexConsumo from "./pages/Consumos/LEGACYIndexConsumo";
+
+import AgregarConsumo from "./pages/Consumos/AgregarConsumo";
+import EditarConsumos from "./pages/Consumos/EditarConsumos";
+import VerConsumos from "./pages/Consumos/VerConsumos";
+
+import AgregarAutor from "./pages/Autores/AgregarAutor";
+import EditarAutor from "./pages/Autores/EditarAutor";
+
+
+import AgregarTarjeta from "./pages/Tarjetas/AgregarTarjeta";
+import EditarTarjeta from "./pages/Tarjetas/EditarTarjeta";
+
+
+
+//import IndexTarjeta from "./pages/Tarjetas/IndexTarjeta";
 
 function App() {
-
-
   return (
-    <>
-      <Header>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/consumos/agregar" element={<AgregarConsumo />} />
+        <Route path="/consumos/editar" element={<EditarConsumos />} />
+        <Route path="/consumos" element={<VerConsumos />} />
 
-      </Header>
-      <main>
-        <Tarjeta
-          nombre="Visa"
-          limiteActual={1500}
-          limiteDisponible={400}
-          cierreAnterior={Date.now()}
-          cierreActual={Date.now()}
-          vencimientoAnterior={Date.now()}
-          vencimientoActual={Date.now()}
-          totalVencimientoAnterior={200}
-          totalVencimientoActual={500}
+        <Route path="/autores/agregar" element={<AgregarAutor />} />
+        <Route path="/autores/editar" element={<EditarAutor />} />
 
 
-        ></Tarjeta>
+        <Route path="/tarjetas/agregar" element={<AgregarTarjeta />} />
+        <Route path="/tarjetas/editar" element={<EditarTarjeta />} />
 
-        <div className='container-consumos'>
-
-          <Consumo
-            nombre="Heladera"
-            total="40000"
-            cantidadCuotas="6"
-            autor="Rodrigo"
-            fechaCompra={Date.now()}
-            onClick={() => console.log("hola")}
-          ></Consumo>
-
-
-
-          <Consumo
-            nombre="Heladera"
-            total="40000"
-            cantidadCuotas="6"
-            autor="Rodrigo"
-            fechaCompra={Date.now()}
-            onClick={() => console.log("hola")}
-          ></Consumo>
-
-
-
-          <Consumo
-            nombre="Heladera"
-            total="40000"
-            cantidadCuotas="6"
-            autor="Rodrigo"
-            fechaCompra={Date.now()}
-            onClick={() => console.log("hola")}
-          ></Consumo>
-
-        </div>
-
-      </main>
-
-
-
-      <Footer></Footer>
-
-
-
-    </>
+      </Routes>
+    </Router>
   );
 }
-/*
- 
-
-*/
 
 export default App;
