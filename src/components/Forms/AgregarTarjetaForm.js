@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Form, FormGroup, Label, Input, Container, Button, Modal, Alert } from "reactstrap"
 
+import { TARJETAS_AGREGAR } from '../../helpers/ApiRoutes';
+
 function AgregarTarjetaForm() {
 
     const [tarjetas, setTarjetas] = useState([]);
@@ -32,14 +34,13 @@ function AgregarTarjetaForm() {
         e.preventDefault();
 
         const validationErrors = validateForm(formData);
-        const API_URI = "/API";
 
         if (Object.keys(validationErrors).length === 0) {
 
             // FORMULARIO VALIDO
             try {
 
-                const response = await fetch(API_URI, {
+                const response = await fetch(TARJETAS_AGREGAR, {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: {
@@ -52,6 +53,7 @@ function AgregarTarjetaForm() {
                 } else {
                     setStatusOk(false)
                 }
+
 
                 toggleSuccessModal();
 

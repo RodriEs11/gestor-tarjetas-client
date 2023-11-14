@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Form, FormGroup, Label, Input, Container, Button, Modal, Alert } from "reactstrap"
 
-import {AUTORES_ADD} from '../../helpers/ApiRoutes';
+import {AUTORES_AGREGAR} from '../../helpers/ApiRoutes';
 
 function AgregarAutorForm() {
 
@@ -35,7 +35,7 @@ function AgregarAutorForm() {
             // FORMULARIO VALIDO
             try {
 
-                const response = await fetch(AUTORES_ADD, {
+                const response = await fetch(AUTORES_AGREGAR, {
                     method: 'POST',
                     body: JSON.stringify(formData),
                     headers: {

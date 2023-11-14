@@ -2,50 +2,95 @@ import React, { useState, useEffect } from "react";
 import { Container, Card, CardBody, CardHeader, CardTitle, Input, CardSubtitle, Label, List, ListGroupItem } from "reactstrap";
 
 
-import { fetchTotalPagarByAutorAndTarjeta } from "../../api/AutorAPI";
+import { fetchTarjetas } from "../../api/TarjetaAPI";
+import { fetchAutores } from "../../api/AutorAPI";
 
 function Tarjeta(props) {
 
-  /*
-  const [totalPagar, setTotalPagar] = useState(0);
-  const [idAutorSelected, setIdAutorSelected] = useState();
-  const [idTarjetaHook, setIdTarjeta] = useState();
+  const [tarjetas, setTarjetas] = useState([]);
+  const [autores, setAutores] = useState([]);
 
-  const objetoTarjeta = props.tarjetaObjeto;
-  const autores = props.autores;
 
-  const idTarjeta = objetoTarjeta.idTarjeta;
-  const nombre = objetoTarjeta.nombre;
-  const limiteActual = objetoTarjeta.limiteActual;
-  const limiteDisponible = objetoTarjeta.limiteDisponible;
-  const cierreAnterior = new Date(objetoTarjeta.cierreAnterior).toLocaleDateString();
-  const cierreActual = new Date(objetoTarjeta.cierreActual).toLocaleDateString();
-  const vencimientoAnterior = new Date(objetoTarjeta.vencimientoAnterior).toLocaleDateString();
-  const vencimientoActual = new Date(objetoTarjeta.vencimientoActual).toLocaleDateString();
-  const totalVencimientoAnterior = objetoTarjeta.totalVencimientoAnterior;
-  const totalVencimientoActual = objetoTarjeta.totalVencimientoActual;
+  const [tarjetaIdSeleccionada, setTarjetaIdSeleccionada] = useState(null);
+  const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState(null);
+
+
+  const [autorIdSeleccionado, setAutorIdSeleccionado] = useState(null);
+  const [autorSeleccionado, setAutorSeleccionado] = useState(null);
+
+  const [cargandoTarjetas, setCargandoTarjetas] = useState(true);
+  const [cargandoAutores, setcargandoAutores] = useState(true);
+
 
 
   useEffect(() => {
-    setIdTarjeta(idTarjeta);
-    if (idAutorSelected && idTarjetaHook) {
-      fetchTotalPagarByAutorAndTarjeta(idAutorSelected, idTarjetaHook)
-        .then((response) => {
-          setTotalPagar(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+    fetchTarjetas().then((tarjetas) => {
+
+      setTarjetas(tarjetas)
+      setTarjetaSeleccionada(tarjetas[0]);
+      setCargandoTarjetas(false);
+
+    }).catch((error) => {
+
+      console.log(error);
+
+    });
+
+    fetchAutores().then((autores) => {
+
+      setAutores(autores)
+      setAutorSeleccionado(autores[0]);
+      setcargandoAutores(false);
+
+    }).catch((error) => {
+
+      console.log(error);
+
+    });
 
 
-    } else {
-    }
-  }, [idTarjetaHook, idAutorSelected]);
 
-  const handleSeleccionAutor = (event) => {
-    setIdAutorSelected(event.target.value);
+  }, [])
+
+  const handleSelectTarjeta = (event) => {
+    const idSeleccionado = parseInt(event.target.value, 10);
+    setTarjetaSeleccionada(idSeleccionado);
+
+    // Buscar la tarjeta correspondiente en el array de tarjetas
+    const tarjeta = tarjetas.find((t) => t.idTarjeta === idSeleccionado);
+    setTarjetaSeleccionada(tarjeta);
   };
-*/
+
+  const handleSelectAutor = (event) => {
+    const idSeleccionadoAutor = parseInt(event.target.value, 10);
+    setAutorIdSeleccionado(idSeleccionadoAutor);
+
+    const autor = autores.find((a) => a.idAutor === idSeleccionadoAutor);
+    //MODIFICAR LUEGO
+    const autorConNuevosCampos = {...autor, totalAPagar:20000};
+    setAutorSeleccionado(autorConNuevosCampos);
+  }
+
+
+  function formatearFecha(fechaCompleta) {
+
+    let fecha = new Date(fechaCompleta);
+
+    let dia = fecha.getUTCDate();
+    let mes = fecha.getUTCMonth() + 1; // Los meses comienzan desde 0
+    let anio = fecha.getUTCFullYear();
+
+    dia = (dia < 10) ? '0' + dia : dia;
+    mes = (mes < 10) ? '0' + mes : mes;
+
+    var fechaFormateada = dia + '/' + mes + '/' + anio;
+
+    return fechaFormateada
+  }
+
+
+
   return (
 
 
@@ -53,24 +98,76 @@ function Tarjeta(props) {
     <Card body className="my-4">
 
       <CardHeader>
-        <CardTitle tag={"h1"} className="text-center">VISA</CardTitle>
+        {cargandoTarjetas ? (
+          <CardTitle tag={"h1"} className="text-center">Cargando...</CardTitle>
+        ) : (
+          <>
+            <CardTitle tag={"h1"} className="text-center">{tarjetaSeleccionada.nombre}</CardTitle>
+          </>
+        )
+        }
+
+
       </CardHeader>
 
       <CardBody className="d-flex justify-content-center align-items-center">
-        <Input type="select" className="text-center" style={{ maxWidth: "45%" }}>
-          <option>Visa</option>
-          <option>Mastercard</option>
+
+
+        <Input type="select" className="text-center" style={{ maxWidth: "45%" }} onChange={handleSelectTarjeta}>
+          <option value="">Selecciona una tarjeta</option>
+          {cargandoTarjetas ? (
+            <option value="" disabled>Cargando tarjetas...</option>
+          ) : (
+            <>
+
+              {tarjetas.map((tarjeta, id) => {
+                return (
+                  <option key={id} value={tarjeta.idTarjeta}>{tarjeta.nombre}</option>
+                )
+              })}
+            </>
+          )
+          }
+
+
         </Input>
+
+
       </CardBody>
 
       <Container className="d-flex flex-wrap justify-content-center align-items-center">
 
         <Card body className="align-items-center m-2">
           <CardTitle tag={"h1"} className="text-center">A pagar</CardTitle>
-          <CardSubtitle tag={"h2"} >$50.000</CardSubtitle>
+
+          {cargandoTarjetas ?
+            (
+              <>
+                <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+              </>
+            ) :
+            (
+              <>
+                <CardSubtitle tag={"h3"} >${tarjetaSeleccionada.limiteTotal}</CardSubtitle>
+              </>
+            )}
+
 
           <CardTitle tag={"h2"} className="text-center m-2">Vencimiento</CardTitle>
-          <CardSubtitle tag={"h3"} >24/11/23</CardSubtitle>
+
+          {cargandoTarjetas ?
+            (
+              <>
+                <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+              </>
+            ) :
+            (
+              <>
+                <CardSubtitle tag={"h3"} >{formatearFecha(tarjetaSeleccionada.vencimiento)}</CardSubtitle>
+              </>
+            )}
+
+
         </Card>
 
 
@@ -81,7 +178,20 @@ function Tarjeta(props) {
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardTitle tag={"h2"} className="text-center">Límite Total</CardTitle>
-            <CardSubtitle tag={"h4"} >$820.000</CardSubtitle>
+
+            {cargandoTarjetas ?
+              (
+                <>
+                  <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+                </>
+              ) :
+              (
+                <>
+                  <CardSubtitle tag={"h3"}>${tarjetaSeleccionada.limiteTotal.toLocaleString()}</CardSubtitle>
+                </>
+              )}
+
+
           </Card>
         </Container>
 
@@ -89,14 +199,37 @@ function Tarjeta(props) {
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardTitle tag={"h2"} className="text-center">Límite disponible</CardTitle>
-            <CardSubtitle tag={"h4"} >$120.000</CardSubtitle>
+
+            {cargandoTarjetas ?
+              (
+                <>
+                  <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+                </>
+              ) :
+              (
+                <>
+                  <CardSubtitle tag={"h3"}>${tarjetaSeleccionada.limiteTotal.toLocaleString()}</CardSubtitle>
+                </>
+              )}
           </Card>
         </Container>
 
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardTitle tag={"h2"} className="text-center">Último cierre</CardTitle>
-            <CardSubtitle tag={"h4"} >12/10/23</CardSubtitle>
+
+            {cargandoTarjetas ?
+              (
+                <>
+                  <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+                </>
+              ) :
+              (
+                <>
+                  <CardSubtitle tag={"h3"}>{formatearFecha(tarjetaSeleccionada.ultimoCierre)}</CardSubtitle>
+                </>
+              )}
+
           </Card>
         </Container>
 
@@ -106,14 +239,34 @@ function Tarjeta(props) {
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardTitle tag={"h2"} className="text-center">Próximo cierre</CardTitle>
-            <CardSubtitle tag={"h4"} >24/11/23</CardSubtitle>
+            {cargandoTarjetas ?
+              (
+                <>
+                  <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+                </>
+              ) :
+              (
+                <>
+                  <CardSubtitle tag={"h3"}>{formatearFecha(tarjetaSeleccionada.proximoCierre)}</CardSubtitle>
+                </>
+              )}
           </Card>
         </Container>
 
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardTitle tag={"h2"} className="text-center">Próximo vencimiento</CardTitle>
-            <CardSubtitle tag={"h4"} >24/11/23</CardSubtitle>
+            {cargandoTarjetas ?
+              (
+                <>
+                  <CardSubtitle tag={"h3"} >Cargando...</CardSubtitle>
+                </>
+              ) :
+              (
+                <>
+                  <CardSubtitle tag={"h3"}>{formatearFecha(tarjetaSeleccionada.proximoVencimiento)}</CardSubtitle>
+                </>
+              )}
           </Card>
         </Container>
 
@@ -124,22 +277,71 @@ function Tarjeta(props) {
 
       <CardBody className="d-flex flex-column justify-content-center align-items-center text-center">
         <Label for="autor">Seleccione el autor para ver sus consumos</Label>
-        <Input type="select" className="text-center my-3" name="autor" style={{ maxWidth: "80%" }}>
-          <option>Rodrigo</option>
-          <option>Luna</option>
-          <option>Emanuel</option>
+        <Input type="select" className="text-center my-3" name="autor" style={{ maxWidth: "80%" }} onChange={handleSelectAutor}>
+
+
+
+
+          {cargandoAutores ?
+            (
+              <>
+                <option>Cargando...</option>
+              </>
+            ) :
+            (
+              <>
+                <option value="">Todos</option>
+                {autores.map((autor, id) => {
+
+                  return (
+                    <option key={id} value={autor.idAutor}>{autor.nombre}</option>
+                  )
+                })}
+              </>
+            )
+          }
+
+
         </Input>
 
         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
           <Card body className="align-items-center">
             <CardHeader>
               <CardTitle tag={"h5"} style={{ lineHeight: "1.8em" }}>
-                A pagar por <span>Rodrigo</span>
+
+                {cargandoAutores ?
+                  (
+                    <>
+                      Cargando...
+                    </>
+                  ) :
+                  (
+                    <>
+                      A pagar por <span>{autorSeleccionado.nombre}</span>
+                    </>
+                  )
+                }
+
+
               </CardTitle>
             </CardHeader>
             <CardBody>
 
-              <CardSubtitle tag={"h2"} className="py-2">$25.000</CardSubtitle>
+              {cargandoAutores ?
+                (
+                  <>
+                     <CardSubtitle tag={"h2"} className="py-2">Cargando...</CardSubtitle>
+                  </>
+                ) :
+                (
+                  <>
+                    <CardSubtitle tag={"h2"} className="py-2">${autorSeleccionado.totalAPagar}</CardSubtitle>
+                  </>
+                )
+              }
+
+
+             
             </CardBody>
 
           </Card>
