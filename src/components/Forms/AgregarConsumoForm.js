@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-//import "./FormAgregarConsumo.css";
 
 import { fetchTarjetas } from "../../api/TarjetaAPI";
 import { fetchAutores } from "../../api/AutorAPI";
 import { Form, FormGroup, Label, Input, Button, Container, Modal, ModalFooter, Alert, ModalBody, Fade } from "reactstrap";
+
+import { CONSUMOS_AGREGAR } from '../../helpers/ApiRoutes';
 
 function AgregarConsumoForm() {
   const [tarjetas, setTarjetas] = useState([]);
@@ -63,14 +64,13 @@ function AgregarConsumoForm() {
     e.preventDefault();
 
     const validationErrors = validateForm(formData);
-    const API_URI = "/API";
 
     if (Object.keys(validationErrors).length === 0) {
 
       // FORMULARIO VALIDO
       try {
 
-        const response = await fetch(API_URI, {
+        const response = await fetch(CONSUMOS_AGREGAR, {
           method: 'POST',
           body: JSON.stringify(formData),
           headers: {
@@ -80,10 +80,11 @@ function AgregarConsumoForm() {
 
         if (await response.status == 200) {
           setStatusOk(true)
+
         } else {
           setStatusOk(false)
         }
-
+    
         toggleSuccessModal();
 
 
@@ -153,7 +154,7 @@ function AgregarConsumoForm() {
         {statusOk ?
 
           <Alert color="success">
-            Autor agregado con éxito
+            Consumo agregado con éxito
           </Alert>
           :
           <Alert color="danger">
@@ -169,7 +170,7 @@ function AgregarConsumoForm() {
           <Label for="tarjeta" >Tarjeta de crédito *</Label>
 
           <Input type="select" name="tarjeta" onChange={handleChange}>
-            <option value={""}>Selecciona una tarjeta</option>
+            <option value={""} disabled >Selecciona una tarjeta</option>
 
             {tarjetas.map((tarjeta, id) => {
               return (
@@ -192,7 +193,7 @@ function AgregarConsumoForm() {
         <FormGroup>
           <Label for="autor" >Autor *</Label>
           <Input type="select" name="autor" onChange={handleChange}>
-            <option value={""}>Selecciona un autor</option>
+            <option value={""} disabled >Selecciona un autor</option>
 
             {autores.map((autor, id) => {
               return (

@@ -28,11 +28,18 @@ function VerConsumos() {
 
                 <Container className="d-flex flex-wrap justify-content-center align-items-center m-0 p-0">
 
-                    <Consumo></Consumo>
-                    <Consumo></Consumo>
-                    <Consumo></Consumo>
-                    <Consumo></Consumo>
-                    <Consumo></Consumo>
+                    <Consumo 
+                        nombre="Heladera blanca sansun"
+                        montoTotal="20000"
+                        precioCuota="3333"
+                        autor="Rodrigo"
+                        cuotasRestantes= "2"
+                        cantidadCuotas="6"
+                        fechaCompra="2020-01-01"
+                        notas="Notas varias de la compra"
+                        
+                    />
+                  
                 </Container>
 
 

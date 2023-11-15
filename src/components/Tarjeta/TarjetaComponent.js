@@ -68,7 +68,7 @@ function Tarjeta(props) {
 
     const autor = autores.find((a) => a.idAutor === idSeleccionadoAutor);
     //MODIFICAR LUEGO
-    const autorConNuevosCampos = {...autor, totalAPagar:20000};
+    const autorConNuevosCampos = { ...autor, totalAPagar: 20000 };
     setAutorSeleccionado(autorConNuevosCampos);
   }
 
@@ -330,7 +330,7 @@ function Tarjeta(props) {
               {cargandoAutores ?
                 (
                   <>
-                     <CardSubtitle tag={"h2"} className="py-2">Cargando...</CardSubtitle>
+                    <CardSubtitle tag={"h2"} className="py-2">Cargando...</CardSubtitle>
                   </>
                 ) :
                 (
@@ -341,7 +341,7 @@ function Tarjeta(props) {
               }
 
 
-             
+
             </CardBody>
 
           </Card>
