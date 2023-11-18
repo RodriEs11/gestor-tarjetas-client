@@ -170,7 +170,7 @@ function AgregarConsumoForm() {
           <Label for="tarjeta" >Tarjeta de crédito *</Label>
 
           <Input type="select" name="tarjeta" onChange={handleChange}>
-            <option value={""} disabled >Selecciona una tarjeta</option>
+            <option value={""} disabled selected >Selecciona una tarjeta</option>
 
             {tarjetas.map((tarjeta, id) => {
               return (
@@ -193,7 +193,7 @@ function AgregarConsumoForm() {
         <FormGroup>
           <Label for="autor" >Autor *</Label>
           <Input type="select" name="autor" onChange={handleChange}>
-            <option value={""} disabled >Selecciona un autor</option>
+            <option value={""} disabled selected >Selecciona un autor</option>
 
             {autores.map((autor, id) => {
               return (

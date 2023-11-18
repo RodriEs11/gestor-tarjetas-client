@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './Consumo.css';
 import { Container, Card, CardBody, CardTitle, CardSubtitle, List, Button, ButtonGroup, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { IoPeople, IoListOutline, IoCalendarNumber } from 'react-icons/io5';
+import { formatearFecha, isStringVacio } from '../../helpers/util';
 
 function Consumo(props) {
 
@@ -11,7 +12,7 @@ function Consumo(props) {
     const autor = props.autor;
     const cuotasRestantes = props.cuotasRestantes;
     const cantidadCuotas = props.cantidadCuotas;
-    const fechaCompra = props.fechaCompra;
+    const fechaCompra = formatearFecha(props.fechaCompra);
     const notas = props.notas;
 
 
@@ -29,7 +30,7 @@ function Consumo(props) {
             <CardBody>
                 <CardTitle tag={"h4"}>{nombre}</CardTitle>
                 <CardSubtitle tag={"h5"} className="mb-2 text-muted">${montoTotal.toLocaleString()}</CardSubtitle>
-                <CardSubtitle tag={"h6"} className="mb-2 text-muted">C/Cuota ${precioCuota.toLocaleString()}</CardSubtitle>
+                <CardSubtitle tag={"h6"} className="mb-2 text-muted">Cuotas de: ${precioCuota.toLocaleString()}</CardSubtitle>
             </CardBody>
 
             <hr className="m-0 mx-3"></hr>
@@ -42,7 +43,7 @@ function Consumo(props) {
 
                 <List className="px-3 my-2">
                     <IoListOutline size={20} className="me-2" />
-                    <span>Cuota {cuotasRestantes}/{cantidadCuotas}</span>
+                    <span>Cuota {cantidadCuotas - cuotasRestantes + 1 /*Cuotas restantes disminuye a medida que se van pagando, en el front se muestra cuantas cuotas ya estan pagadas*/}/{cantidadCuotas}</span>
                 </List>
 
                 <List className="px-3 my-2">
@@ -55,7 +56,7 @@ function Consumo(props) {
 
             <CardBody color="info">
                 <ButtonGroup>
-                    <Button color="primary" onClick={cambiarEstadoModal}>Notas</Button>
+                    <Button color="primary" onClick={cambiarEstadoModal} disabled={isStringVacio(notas)}>Notas</Button>
                     <Button color="success">Pagar</Button>
                 </ButtonGroup>
 
