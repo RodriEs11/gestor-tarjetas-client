@@ -1,6 +1,6 @@
 import {fetchApi} from "../helpers/fetchApi";
 
-const {AUTORES} = require("../helpers/ApiRoutes");
+const {AUTORES, AUTOR_OBTENER_TOTAL} = require("../helpers/ApiRoutes");
 
 function fetchAutores() {
 
@@ -8,5 +8,10 @@ function fetchAutores() {
  
 }
 
+function obtenerPagarTotalAutor(idAutor){
 
-export { fetchAutores};
+  return fetchApi(AUTOR_OBTENER_TOTAL(idAutor))
+}
+
+
+export { fetchAutores, obtenerPagarTotalAutor};

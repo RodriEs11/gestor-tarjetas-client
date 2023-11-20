@@ -7,7 +7,7 @@ import { Container, Card, CardBody, CardHeader, CardTitle, Input, CardSubtitle, 
 import Tarjeta from "../../components/Tarjeta/TarjetaComponent";
 
 import { fetchTarjetas } from "../../api/TarjetaAPI";
-import { fetchAutores } from "../../api/AutorAPI";
+import { fetchAutores, obtenerPagarTotalAutor } from "../../api/AutorAPI";
 import { fetchConsumos } from "../../api/ConsumoAPI";
 
 import { formatearFecha } from "../../helpers/util";
@@ -19,6 +19,7 @@ function VerConsumos() {
     const [tarjetas, setTarjetas] = useState([]);
     const [autores, setAutores] = useState([]);
     const [consumos, setConsumos] = useState([]);
+    const [pagarTotalAutor, setPagarTotalAutor] = useState(0);
 
 
     const [tarjetaIdSeleccionada, setTarjetaIdSeleccionada] = useState(null);
@@ -49,9 +50,9 @@ function VerConsumos() {
         });
 
         fetchAutores().then((autores) => {
-
+            
             setAutores(autores)
-            setAutorSeleccionado(autores[0]);
+            //setAutorSeleccionado(autores[0]);
             setCargandoAutores(false);
 
         }).catch((error) => {
@@ -59,7 +60,6 @@ function VerConsumos() {
             console.log(error);
 
         });
-
 
         fetchConsumos().then((consumos) => {
 
@@ -71,8 +71,6 @@ function VerConsumos() {
             console.log(error);
 
         });
-
-
 
     }, [])
 
@@ -90,8 +88,18 @@ function VerConsumos() {
         setAutorIdSeleccionado(idSeleccionadoAutor);
 
         const autor = autores.find((a) => a.idAutor === idSeleccionadoAutor);
-        //MODIFICAR LUEGO
-        const autorConNuevosCampos = { ...autor, totalAPagar: 20000 };
+
+
+
+        //OBTIENE LA SUMA DE TODAS LAS CUOTAS PENDIENTES SEGUN EL AUTOR SELECCIONADO
+        obtenerPagarTotalAutor(idSeleccionadoAutor).then((totalPagarAutor) => {
+
+            setPagarTotalAutor(totalPagarAutor[0].totalAPagar);
+        }).catch((error) => {
+            console.error(error);
+        })
+
+        const autorConNuevosCampos = { ...autor, pagarTotalAutor: pagarTotalAutor };
         setAutorSeleccionado(autorConNuevosCampos);
     }
 
@@ -99,19 +107,15 @@ function VerConsumos() {
 
     return (
         <div className="d-flex flex-column">
-
             <Header />
-
             <main className="d-flex flex-column" style={{ backgroundColor: "#fff" }}>
-
                 <Container className="d-flex flex-wrap justify-content-center align-items-center m-0 p-0">
 
-
-                    <Input type="select" className="text-center" style={{ maxWidth: "45%" }} onChange={handleSelectTarjeta}>
-                        <option value="" disabled>Selecciona una tarjeta</option>
+                    <Input type="select" className="text-center" style={{ maxWidth: "45%" }} defaultValue={'DEFAULT'} onChange={handleSelectTarjeta}>
+                        <option value="DEFAULT" disabled>Selecciona una tarjeta</option>
 
                         {cargandoTarjetas ? (
-                            <option value="" disabled>Cargando tarjetas...</option>
+                            <option value="DEFAULT" disabled>Cargando tarjetas...</option>
                         ) : (
                             <>
 
@@ -123,8 +127,6 @@ function VerConsumos() {
                             </>
                         )
                         }
-
-
                     </Input>
 
                     {cargandoTarjetas ? (
@@ -138,9 +140,7 @@ function VerConsumos() {
                             ultimoCierre="Cargando..."
                             proximoCierre="Cargando..."
                             proximoVencimiento="Cargando..."
-
                         />
-
                     ) : (
                         <Tarjeta
                             nombre={tarjetaSeleccionada.nombre}
@@ -151,22 +151,18 @@ function VerConsumos() {
                             ultimoCierre={formatearFecha(tarjetaSeleccionada.ultimoCierre)}
                             proximoCierre={formatearFecha(tarjetaSeleccionada.proximoCierre)}
                             proximoVencimiento={formatearFecha(tarjetaSeleccionada.proximoVencimiento)}
-
                         />
                     )
                     }
 
-
-                    
-
                     <CardBody className="d-flex flex-column justify-content-center align-items-center text-center">
                         <Label for="autor">Seleccione el autor para ver sus consumos</Label>
-                        <Input type="select" className="text-center my-3" name="autor" style={{ maxWidth: "80%" }} onChange={handleSelectAutor}>
 
-                            <option value="" disabled>Selecciona un autor</option>
+                        <Input type="select" className="text-center my-3" name="autor" style={{ maxWidth: "80%" }} defaultValue={'DEFAULT'} onChange={handleSelectAutor}>
+                            <option value="DEFAULT" disabled>Selecciona un autor</option>
 
                             {cargandoAutores ? (
-                                <option value="" disabled>Cargando autores...</option>
+                                <option value="DEFAULT" disabled>Cargando autores...</option>
                             ) : (
                                 <>
                                     {autores.map((autor, id) => {
@@ -179,7 +175,6 @@ function VerConsumos() {
                             }
 
                         </Input>
-
                         <Container style={{ maxWidth: "15rem", minWidth: "10rem" }} className="m-2">
                             <Card body className="align-items-center">
                                 <CardHeader>
@@ -189,55 +184,39 @@ function VerConsumos() {
                                             <span>Cargando autores...</span>
                                         ) : (
                                             <>
-                                                A pagar por <span>{autorSeleccionado.nombre}</span>
+                                                A pagar por <span>{autorSeleccionado?.nombre}</span>
                                             </>
                                         )
                                         }
 
-
-
-
-
                                     </CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <CardSubtitle tag={"h2"} className="py-2">${1}</CardSubtitle>
-
-
+                                    <CardSubtitle tag={"h2"} className="py-2">${pagarTotalAutor ? pagarTotalAutor : 0}</CardSubtitle>
                                 </CardBody>
-
                             </Card>
                         </Container>
-
                     </CardBody>
-
-
                 </Container>
 
-
-
                 <Container className="d-flex flex-wrap justify-content-center align-items-center m-0 p-0">
-
 
                     {cargandoConsumos ? (
                         <span>Cargando consumos...</span>
                     ) : (
                         <>
-
                             {consumos.map((consumo, id) => {
                                 return (
-
-
                                     <Consumo
+                                        key={id}
                                         nombre={consumo.nombre}
                                         montoTotal={consumo.montoTotal}
                                         precioCuota={consumo.precioCuota}
                                         autor={consumo.autor}
-                                        cuotasRestantes={consumo.cuotasRestantes}
+                                        numeroProximaCuota={consumo.numeroProximaCuota}
                                         cantidadCuotas={consumo.cantidadCuotas}
                                         fechaCompra={consumo.fechaCompra}
                                         notas={consumo.notas}
-
                                     />
                                 )
                             })}
@@ -245,15 +224,9 @@ function VerConsumos() {
                     )
                     }
 
-
                 </Container>
-
-
-
             </main>
-
             <Footer />
-
         </div>
     );
 }

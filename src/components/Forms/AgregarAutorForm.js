@@ -96,7 +96,7 @@ function AgregarAutorForm() {
                 {statusOk ?
 
                     <Alert color="success">
-                        Consumo agregado con éxito
+                        Autor agregado con éxito
                     </Alert>
                     :
                     <Alert color="danger">

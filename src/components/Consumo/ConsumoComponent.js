@@ -10,7 +10,7 @@ function Consumo(props) {
     const montoTotal = parseInt(props.montoTotal);
     const precioCuota = parseInt(props.precioCuota);
     const autor = props.autor;
-    const cuotasRestantes = props.cuotasRestantes;
+    const numeroProximaCuota = props.numeroProximaCuota;
     const cantidadCuotas = props.cantidadCuotas;
     const fechaCompra = formatearFecha(props.fechaCompra);
     const notas = props.notas;
@@ -30,24 +30,24 @@ function Consumo(props) {
             <CardBody>
                 <CardTitle tag={"h4"}>{nombre}</CardTitle>
                 <CardSubtitle tag={"h5"} className="mb-2 text-muted">${montoTotal.toLocaleString()}</CardSubtitle>
-                <CardSubtitle tag={"h6"} className="mb-2 text-muted">Cuotas de: ${precioCuota.toLocaleString()}</CardSubtitle>
+                <CardSubtitle tag={"h6"} className="mb-2 text-muted">{cantidadCuotas} cuotas de: ${precioCuota.toLocaleString()}</CardSubtitle>
             </CardBody>
 
             <hr className="m-0 mx-3"></hr>
             <CardBody className="p-0" >
 
                 <List className="px-3 my-2">
-                    <IoPeople size={20} className="me-2" />
+                    <IoPeople size={20} className="me-2" title='Nombre del autor' />
                     <span>{autor}</span>
                 </List>
 
                 <List className="px-3 my-2">
-                    <IoListOutline size={20} className="me-2" />
-                    <span>Cuota {cantidadCuotas - cuotasRestantes + 1 /*Cuotas restantes disminuye a medida que se van pagando, en el front se muestra cuantas cuotas ya estan pagadas*/}/{cantidadCuotas}</span>
+                    <IoListOutline size={20} className="me-2" title='Cuotas pendientes'/>
+                    <span>Cuota {numeroProximaCuota}/{cantidadCuotas}</span>
                 </List>
 
                 <List className="px-3 my-2">
-                    <IoCalendarNumber size={20} className="me-2" />
+                    <IoCalendarNumber size={20} className="me-2" title='Fecha de compra'/>
                     <span>{fechaCompra}</span>
                 </List>
 

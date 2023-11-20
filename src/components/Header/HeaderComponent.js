@@ -32,7 +32,7 @@ function Header(args) {
 
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>Consumos</DropdownToggle>
-                        <DropdownMenu right>
+                        <DropdownMenu end>
                             <DropdownItem href='/consumos/agregar'>Agregar</DropdownItem>
                             <DropdownItem href='/consumos/editar'>Editar/Eliminar</DropdownItem>
                             <DropdownItem divider />
@@ -42,7 +42,7 @@ function Header(args) {
 
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>Autores</DropdownToggle>
-                        <DropdownMenu right>
+                        <DropdownMenu end>
                             <DropdownItem href='/autores/agregar'>Agregar</DropdownItem>
                             <DropdownItem href='/autores/editar'>Editar</DropdownItem>
                         </DropdownMenu>
@@ -50,7 +50,7 @@ function Header(args) {
 
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav caret>Tarjetas</DropdownToggle>
-                        <DropdownMenu right>
+                        <DropdownMenu end>
                             <DropdownItem href='/tarjetas/agregar'>Agregar</DropdownItem>
                             <DropdownItem href='/tarjetas/editar'>Editar</DropdownItem>
                         </DropdownMenu>
