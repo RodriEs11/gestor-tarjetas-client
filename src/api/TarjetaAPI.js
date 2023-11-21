@@ -1,16 +1,19 @@
 import {fetchApi} from "../helpers/fetchApi";
 
+const {TARJETAS, TARJETA_OBTENER_TOTAL} = require("../helpers/ApiRoutes");
+
 async function fetchTarjetas() {
 
-  const URL_TARJETAS = "/api/tarjetas/";
-
-  return await fetchApi(URL_TARJETAS);
+  return await fetchApi(TARJETAS);
  
 }
 
-async function fetchTarjetaById(id){
-  const URL_TARJETA_BY_ID = `/api/tarjetas/${id}`;
 
-  return await fetchApi(URL_TARJETA_BY_ID);
+async function obtenerPagarTotalTarjeta(idTarjeta){
+
+
+  return await fetchApi(TARJETA_OBTENER_TOTAL(idTarjeta));
 }
-export { fetchTarjetas, fetchTarjetaById};
+
+
+export { fetchTarjetas, obtenerPagarTotalTarjeta};

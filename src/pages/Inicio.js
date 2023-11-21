@@ -15,7 +15,7 @@ function Index() {
         <Container className="py-5 d-flex justify-content-center flex-column align-items-center text-light text-center m-2">
           <h1 className="display-1">Página principal</h1>
           <p className="fs-3">En esta aplicación podrás ver toda la información sobre tus tarjetas de crédito</p>
-          <Button color="info" size="lg">Ver más</Button>
+          <Button color="info" size="lg"  onClick={ () => window.location.href = "/consumos"}>Ver más</Button>
         </Container>
 
       </main>

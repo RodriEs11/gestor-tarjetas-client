@@ -3,10 +3,10 @@ import Header from "../../components/Header/HeaderComponent";
 import Footer from "../../components/Footer/FooterComponent";
 import Consumo from "../../components/Consumo/ConsumoComponent";
 
-import { Container, Card, CardBody, CardHeader, CardTitle, Input, CardSubtitle, Label } from "reactstrap";
+import { Container, Card, CardBody, CardHeader, CardTitle, Input, CardSubtitle, Label, Button, ButtonGroup } from "reactstrap";
 import Tarjeta from "../../components/Tarjeta/TarjetaComponent";
 
-import { fetchTarjetas } from "../../api/TarjetaAPI";
+import { fetchTarjetas, obtenerPagarTotalTarjeta } from "../../api/TarjetaAPI";
 import { fetchAutores, obtenerPagarTotalAutor } from "../../api/AutorAPI";
 import { fetchConsumos } from "../../api/ConsumoAPI";
 
@@ -20,6 +20,7 @@ function VerConsumos() {
     const [autores, setAutores] = useState([]);
     const [consumos, setConsumos] = useState([]);
     const [pagarTotalAutor, setPagarTotalAutor] = useState(0);
+    const [pagarTotalTarjeta, setPagarTotalTarjeta] = useState(0);
 
 
     const [tarjetaIdSeleccionada, setTarjetaIdSeleccionada] = useState(null);
@@ -34,6 +35,8 @@ function VerConsumos() {
     const [cargandoConsumos, setCargandoConsumos] = useState(true);
 
 
+    const [autorFiltroConsumos, setAutorFiltroConsumos] = useState(0); // 0 = Mostrar consumos de todos los autores
+
 
     useEffect(() => {
 
@@ -41,6 +44,7 @@ function VerConsumos() {
 
             setTarjetas(tarjetas)
             setTarjetaSeleccionada(tarjetas[0]);
+            setTarjetaIdSeleccionada(tarjetas[0].idTarjeta);
             setCargandoTarjetas(false);
 
         }).catch((error) => {
@@ -49,8 +53,10 @@ function VerConsumos() {
 
         });
 
+
+
         fetchAutores().then((autores) => {
-            
+
             setAutores(autores)
             //setAutorSeleccionado(autores[0]);
             setCargandoAutores(false);
@@ -77,6 +83,13 @@ function VerConsumos() {
     const handleSelectTarjeta = (event) => {
         const idSeleccionado = parseInt(event.target.value, 10);
         setTarjetaSeleccionada(idSeleccionado);
+
+        obtenerPagarTotalTarjeta(idSeleccionado).then((resultado) => {
+
+            setPagarTotalTarjeta(resultado[0].totalAPagar); // 0-> Para obtener el primer array  [ {"totalAPagar": 10000 } ]
+        }).catch((error) => {
+            console.log(error);
+        })
 
         // Buscar la tarjeta correspondiente en el array de tarjetas
         const tarjeta = tarjetas.find((t) => t.idTarjeta === idSeleccionado);
@@ -144,10 +157,10 @@ function VerConsumos() {
                     ) : (
                         <Tarjeta
                             nombre={tarjetaSeleccionada.nombre}
-                            pagar={0}
+                            pagar={pagarTotalTarjeta ? pagarTotalTarjeta : 0}
                             vencimiento={formatearFecha(tarjetaSeleccionada.vencimiento)}
                             limiteTotal={tarjetaSeleccionada.limiteTotal}
-                            limiteDisponible={0}
+                            limiteDisponible={pagarTotalTarjeta ? (tarjetaSeleccionada.limiteTotal - pagarTotalTarjeta) : tarjetaSeleccionada.limiteTotal}
                             ultimoCierre={formatearFecha(tarjetaSeleccionada.ultimoCierre)}
                             proximoCierre={formatearFecha(tarjetaSeleccionada.proximoCierre)}
                             proximoVencimiento={formatearFecha(tarjetaSeleccionada.proximoVencimiento)}
@@ -156,7 +169,7 @@ function VerConsumos() {
                     }
 
                     <CardBody className="d-flex flex-column justify-content-center align-items-center text-center">
-                        <Label for="autor">Seleccione el autor para ver sus consumos</Label>
+                        <Label for="autor">Seleccione el autor para calcular sus gastos</Label>
 
                         <Input type="select" className="text-center my-3" name="autor" style={{ maxWidth: "80%" }} defaultValue={'DEFAULT'} onChange={handleSelectAutor}>
                             <option value="DEFAULT" disabled>Selecciona un autor</option>
@@ -192,14 +205,45 @@ function VerConsumos() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardBody>
-                                    <CardSubtitle tag={"h2"} className="py-2">${pagarTotalAutor ? pagarTotalAutor : 0}</CardSubtitle>
+                                    <CardSubtitle tag={"h2"} className="py-2">${pagarTotalAutor ? pagarTotalAutor.toLocaleString() : 0}</CardSubtitle>
                                 </CardBody>
                             </Card>
                         </Container>
                     </CardBody>
                 </Container>
+                <p >Filtrar consumos de:</p>
+
+                <ButtonGroup className=" flex-wrap">
+
+                    <Button
+                        color="primary"
+                        outline
+                        onClick={() => setAutorFiltroConsumos(0)}
+                        active={autorFiltroConsumos === 0}
+                    >
+                        Todos
+                    </Button>
+
+                    {autores.map((autor, id) => {
+                        return (
+                            <Button key={id}
+                                color="primary"
+                                outline
+                                onClick={() => setAutorFiltroConsumos(autor.idAutor)}
+                                active={autorFiltroConsumos === autor.idAutor}
+                            >
+                                {autor.nombre}
+                            </Button>
+                        )
+                    })}
+
+            
+                </ButtonGroup>
+  
 
                 <Container className="d-flex flex-wrap justify-content-center align-items-center m-0 p-0">
+
+
 
                     {cargandoConsumos ? (
                         <span>Cargando consumos...</span>
@@ -209,6 +253,7 @@ function VerConsumos() {
                                 return (
                                     <Consumo
                                         key={id}
+                                        id={id}
                                         nombre={consumo.nombre}
                                         montoTotal={consumo.montoTotal}
                                         precioCuota={consumo.precioCuota}
@@ -217,6 +262,8 @@ function VerConsumos() {
                                         cantidadCuotas={consumo.cantidadCuotas}
                                         fechaCompra={consumo.fechaCompra}
                                         notas={consumo.notas}
+                                        idDetalleCuotas={consumo.idDetalleCuotas}
+                                        finalizado={consumo.finalizado}
                                     />
                                 )
                             })}
