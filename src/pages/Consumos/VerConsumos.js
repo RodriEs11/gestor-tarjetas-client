@@ -117,7 +117,6 @@ function VerConsumos() {
     }
 
 
-
     return (
         <div className="d-flex flex-column">
             <Header />
@@ -160,7 +159,7 @@ function VerConsumos() {
                             pagar={pagarTotalTarjeta ? pagarTotalTarjeta : 0}
                             vencimiento={formatearFecha(tarjetaSeleccionada.vencimiento)}
                             limiteTotal={tarjetaSeleccionada.limiteTotal}
-                            limiteDisponible={pagarTotalTarjeta ? (tarjetaSeleccionada.limiteTotal - pagarTotalTarjeta) : tarjetaSeleccionada.limiteTotal}
+                            limiteDisponible={0}
                             ultimoCierre={formatearFecha(tarjetaSeleccionada.ultimoCierre)}
                             proximoCierre={formatearFecha(tarjetaSeleccionada.proximoCierre)}
                             proximoVencimiento={formatearFecha(tarjetaSeleccionada.proximoVencimiento)}
@@ -237,9 +236,9 @@ function VerConsumos() {
                         )
                     })}
 
-            
+
                 </ButtonGroup>
-  
+
 
                 <Container className="d-flex flex-wrap justify-content-center align-items-center m-0 p-0">
 
@@ -250,22 +249,44 @@ function VerConsumos() {
                     ) : (
                         <>
                             {consumos.map((consumo, id) => {
-                                return (
-                                    <Consumo
-                                        key={id}
-                                        id={id}
-                                        nombre={consumo.nombre}
-                                        montoTotal={consumo.montoTotal}
-                                        precioCuota={consumo.precioCuota}
-                                        autor={consumo.autor}
-                                        numeroProximaCuota={consumo.numeroProximaCuota}
-                                        cantidadCuotas={consumo.cantidadCuotas}
-                                        fechaCompra={consumo.fechaCompra}
-                                        notas={consumo.notas}
-                                        idDetalleCuotas={consumo.idDetalleCuotas}
-                                        finalizado={consumo.finalizado}
-                                    />
-                                )
+                                //0-> Todos los consumos de todos los autores
+                                if (autorFiltroConsumos === 0) {
+                                    return (
+                                        <Consumo
+                                            key={id}
+                                            id={id}
+                                            nombre={consumo.nombre}
+                                            montoTotal={consumo.montoTotal}
+                                            precioCuota={consumo.precioCuota}
+                                            autor={consumo.autor}
+                                            numeroProximaCuota={consumo.numeroProximaCuota}
+                                            cantidadCuotas={consumo.cantidadCuotas}
+                                            fechaCompra={consumo.fechaCompra}
+                                            notas={consumo.notas}
+                                            idDetalleCuotas={consumo.idDetalleCuotas}
+                                            finalizado={consumo.finalizado}
+                                        />
+                                    )
+                                } else if (consumo.idAutor === autorFiltroConsumos) {
+                                    return (
+
+                                        <Consumo
+                                            key={id}
+                                            id={id}
+                                            nombre={consumo.nombre}
+                                            montoTotal={consumo.montoTotal}
+                                            precioCuota={consumo.precioCuota}
+                                            autor={consumo.autor}
+                                            numeroProximaCuota={consumo.numeroProximaCuota}
+                                            cantidadCuotas={consumo.cantidadCuotas}
+                                            fechaCompra={consumo.fechaCompra}
+                                            notas={consumo.notas}
+                                            idDetalleCuotas={consumo.idDetalleCuotas}
+                                            finalizado={consumo.finalizado}
+                                        />
+                                    )
+                                }
+
                             })}
                         </>
                     )
